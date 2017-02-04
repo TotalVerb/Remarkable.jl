@@ -1,5 +1,6 @@
 module Remarkable
 
-# package code goes here
+include("Articles.jl")
+include("Tags.jl")
 
-end # module
+end  # module
