@@ -82,7 +82,7 @@ end
 Add an entry to the tag matrix, whose tags are given by `tags`, and whose
 weight is given by `value`.
 """
-function populate!(m::TagMatrix, tags, value)
+function populate!(m::TagMatrix, tags, value=1)
     for tag in tags
         m.popularity[tag] += value
         for tag2 in tags
@@ -93,6 +93,28 @@ function populate!(m::TagMatrix, tags, value)
     end
 end
 
-export TagMatrix, joint, relatedto, populate!, popular, subtags, tags
+immutable TagTree
+    root::String
+    children::Vector{TagTree}
+end
+root(tr::TagTree) = tr.root
+children(tr::TagTree) = tr.children
+
+typealias TagForest Vector{TagTree}
+
+function forest(m::TagMatrix, rset=collect(tags(m)))
+    rset = sort(rset; by=x -> popularity(m, x), rev=true)
+    result = TagForest()
+    while !isempty(rset)
+        top = shift!(rset)
+        lower = filter(x -> issubtag(m, x, top), rset)
+        rset = filter(x -> !issubtag(m, x, top), rset)
+        push!(result, TagTree(top, forest(m, lower)))
+    end
+    result
+end
+
+export TagMatrix, joint, relatedto, populate!, popular, subtags, tags, forest,
+       root, children
 
 end
