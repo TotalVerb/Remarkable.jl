@@ -36,7 +36,12 @@ immutable TagMatrix
         Dict{String,Tag}())
 end
 
-function tag(m::TagMatrix, t::AbstractString)
+"""
+    tagobject(m::TagMatrix, t::AbstractString)
+
+Obtain the `Tag` object corresponding to `t` from matrix `m`.
+"""
+function tagobject(m::TagMatrix, t::AbstractString)
     # Normalize the display name of the tag
     t = normalize_string(t, :NFKC)
 
@@ -53,7 +58,7 @@ function tag(m::TagMatrix, t::AbstractString)
         m.uritable[uri] = Tag(t)
     end
 end
-tag(::TagMatrix, t::Tag) = t
+tagobject(::TagMatrix, t::Tag) = t
 
 """
     tags(m::TagMatrix)
@@ -68,7 +73,7 @@ tags(m::TagMatrix) = keys(m.popularity)
 Return the popularity of tag `t` in `m`.
 """
 popularity(m::TagMatrix, t::Tag) = m.popularity[t]
-popularity(m::TagMatrix, t) = popularity(m, tag(m, t))
+popularity(m::TagMatrix, t) = popularity(m, tagobject(m, t))
 
 """
     popular(m::TagMatrix)
@@ -84,7 +89,7 @@ Return the total weight of entries which have both `t1` and `t2` as tags.
 """
 joint(m::TagMatrix, t1::Tag, t2::Tag) =
     m.correlation[tuple(sort([t1, t2])...)]
-joint(m::TagMatrix, t1, t2) = joint(m, tag(m, t1), tag(m, t2))
+joint(m::TagMatrix, t1, t2) = joint(m, tagobject(m, t1), tagobject(m, t2))
 
 """
     relatedto(m::TagMatrix, tag, num=8)
@@ -98,7 +103,7 @@ function relatedto(m::TagMatrix, t::Tag, num=8)
     sort!(top, by=x -> -x[2])
     take(top, num)
 end
-relatedto(m::TagMatrix, t, num=8) = relatedto(m, tag(m, t), num)
+relatedto(m::TagMatrix, t, num=8) = relatedto(m, tagobject(m, t), num)
 
 """
     issubtag(m::TagMatrix, a, b)
@@ -109,7 +114,7 @@ Return `true` if `a` is a subtag of `b`. A tag `a` is defined to be a subtag of
 """
 issubtag(m::TagMatrix, a::Tag, b::Tag) = a == b ||
     joint(m, a, b) >= 0.75 * popularity(m, a) + 0.75
-issubtag(m::TagMatrix, a, b) = issubtag(m, tag(m, a), tag(m, b))
+issubtag(m::TagMatrix, a, b) = issubtag(m, tagobject(m, a), tagobject(m, b))
 
 """
     subtags(m::TagMatrix, tag)
@@ -121,7 +126,7 @@ function subtags(m::TagMatrix, t::Tag)
     sort!(result; by=x -> popularity(m, x), rev=true)
     result
 end
-subtags(m::TagMatrix, t) = subtags(m, tag(m, t))
+subtags(m::TagMatrix, t) = subtags(m, tagobject(m, t))
 
 """
     populate!(m::TagMatrix, tags, value=1)
@@ -140,7 +145,7 @@ function populate!(m::TagMatrix, tags::Vector{Tag}, value=1)
     end
 end
 populate!(m::TagMatrix, tags, value=1) =
-    populate!(m, [tag(m, t) for t in tags], value)
+    populate!(m, [tagobject(m, t) for t in tags], value)
 
 immutable TagTree
     root::Tag
@@ -164,6 +169,6 @@ function forest(m::TagMatrix, rset=collect(tags(m)))
 end
 
 export TagMatrix, joint, relatedto, populate!, popular, subtags, tags, forest,
-       root, children, tagname, Tag
+       root, children, tagname, Tag, tagobject
 
 end
