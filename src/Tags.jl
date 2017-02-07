@@ -7,6 +7,7 @@ import Base: isless
 using Base.Iterators
 using AutoHashEquals
 using DataStructures
+using ..Common
 
 """
 An individual tag object representing a category that objects can be classified
@@ -21,13 +22,31 @@ isless(t::Tag, u::Tag) = isless(tagname(t), tagname(u))
 immutable TagMatrix
     popularity::DefaultDict{Tag,Int,Int}
     correlation::DefaultDict{Tuple{Tag,Tag},Int,Int}
-    
+    uritable::Dict{String,Tag}
+
     TagMatrix() = new(
         DefaultDict{Tag,Int}(0),
-        DefaultDict{Tuple{Tag,Tag}, Int}(0))
+        DefaultDict{Tuple{Tag,Tag}, Int}(0),
+        Dict{String,Tag}())
 end
 
-tag(m::TagMatrix, t::AbstractString) = Tag(t)
+function tag(m::TagMatrix, t::AbstractString)
+    # Normalize the display name of the tag
+    t = normalize_string(t, :NFKC)
+
+    # Normalize the tag name further to a URI-suitable variant
+    uri = urinormalize(t)
+    if haskey(m.uritable, uri)
+        candidate = m.uritable[uri]
+        if tagname(candidate) == t
+            candidate
+        else
+            error("Cannot retrieve tag $(repr(t)) because it conflicts with tag $(candidate)")
+        end
+    else
+        m.uritable[uri] = Tag(t)
+    end
+end
 tag(::TagMatrix, t::Tag) = t
 
 """
@@ -104,18 +123,18 @@ subtags(m::TagMatrix, t) = subtags(m, tag(m, t))
 Add an entry to the tag matrix, whose tags are given by `tags`, and whose
 weight is given by `value`.
 """
-function populate!(m::TagMatrix, tags, value=1)
-    for str in tags
-        a = tag(m, str)
+function populate!(m::TagMatrix, tags::Vector{Tag}, value=1)
+    for a in tags
         m.popularity[a] += value
-        for str2 in tags
-            if str2 > str
-                b = tag(m, str2)
+        for b in tags
+            if b > a
                 m.correlation[(a, b)] += value
             end
         end
     end
 end
+populate!(m::TagMatrix, tags, value=1) =
+    populate!(m, [tag(m, t) for t in tags], value)
 
 immutable TagTree
     root::Tag

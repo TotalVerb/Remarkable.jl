@@ -1,10 +1,17 @@
 using Remarkable
 using Base.Test
 
+using Remarkable.Common
+@testset "Common" begin
+    @test urinormalize("Hello, World!") == "hello-world"
+    @test urinormalize("p-adic numbers") == "p-adic-numbers"
+    @test urinormalize("München") == "münchen"
+    @test urinormalize("Weierstraß M-test") == "weierstrass-m-test"
+end
+
 using Remarkable.Tags
 using Remarkable.Tags: tagname
 
-# write your own tests here
 @testset "Tags" begin
     m = TagMatrix()
 
@@ -28,4 +35,6 @@ using Remarkable.Tags: tagname
     f = forest(m)
     @test tagname(root(f[1])) == "vehicle"
     @test tagname(root(children(f[1])[1])) == "car"
+
+    @test_throws ErrorException populate!(m, ["CAR", "gasoline"])
 end
