@@ -2,6 +2,7 @@ using Remarkable
 using Base.Test
 
 using Remarkable.Tags
+using Remarkable.Tags: tagname
 
 # write your own tests here
 @testset "Tags" begin
@@ -9,14 +10,14 @@ using Remarkable.Tags
 
     # populate with a single item
     populate!(m, ["car", "vehicle"])
-    @test Set(tags(m)) == Set(["car", "vehicle"])
+    @test map(tagname, Set(tags(m))) == Set(["car", "vehicle"])
 
     # populate with an item of higher weight
     populate!(m, ["bicycle", "vehicle"], 2)
-    @test Set(tags(m)) == Set(["car", "bicycle", "vehicle"])
+    @test map(tagname, Set(tags(m))) == Set(["car", "bicycle", "vehicle"])
     @test Tags.popularity(m, "bicycle") == 2
     @test Tags.popularity(m, "vehicle") == 3
-    @test popular(m) == ["vehicle", "bicycle", "car"]
+    @test tagname.(popular(m)) == ["vehicle", "bicycle", "car"]
 
     populate!(m, ["segway", "vehicle", "electric"])
     populate!(m, ["computer", "electric"])
@@ -25,6 +26,6 @@ using Remarkable.Tags
     populate!(m, ["vehicle", "car", "electric-car", "electric"])
     populate!(m, ["vehicle", "car", "gasoline"])
     f = forest(m)
-    @test root(f[1]) == "vehicle"
-    @test root(children(f[1])[1]) == "car"
+    @test tagname(root(f[1])) == "vehicle"
+    @test tagname(root(children(f[1])[1])) == "car"
 end
