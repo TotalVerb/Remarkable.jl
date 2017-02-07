@@ -16,6 +16,12 @@ under.
 @auto_hash_equals immutable Tag
     name::String
 end
+
+"""
+    tagname(::Tag)
+
+Return the canonical, user-friendly name of this tag.
+"""
 tagname(t::Tag) = t.name
 isless(t::Tag, u::Tag) = isless(tagname(t), tagname(u))
 
@@ -158,6 +164,6 @@ function forest(m::TagMatrix, rset=collect(tags(m)))
 end
 
 export TagMatrix, joint, relatedto, populate!, popular, subtags, tags, forest,
-       root, children
+       root, children, tagname
 
 end

@@ -10,7 +10,6 @@ using Remarkable.Common
 end
 
 using Remarkable.Tags
-using Remarkable.Tags: tagname
 
 @testset "Tags" begin
     m = TagMatrix()
