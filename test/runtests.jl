@@ -1,5 +1,6 @@
 using Remarkable
 using Base.Test
+using Distances
 
 using Remarkable.Common
 @testset "Common" begin
@@ -27,8 +28,8 @@ using Remarkable.Tags
 
     populate!(m, ["segway", "vehicle", "electric"])
     populate!(m, ["computer", "electric"])
-    populate!(m, ["food", "toaster", "electric"])
-    populate!(m, ["food", "fruit", "tomato"])
+    populate!(m, ["appliance", "toaster", "electric"])
+    populate!(m, ["appliance", "oven", "gas"])
     populate!(m, ["vehicle", "car", "electric-car", "electric"])
     populate!(m, ["vehicle", "car", "gasoline"])
     f = forest(m)
@@ -36,4 +37,18 @@ using Remarkable.Tags
     @test tagname(root(children(f[1])[1])) == "car"
 
     @test_throws ErrorException populate!(m, ["CAR", "gasoline"])
+
+    # test similarity metrics
+    populate!(m, ["banana", "fruit", "food"])
+    populate!(m, ["cabbage", "food"])
+    banana = tagobject(m, "banana")
+    fruit = tagobject(m, "fruit")
+    food = tagobject(m, "food")
+    cabbage = tagobject(m, "cabbage")
+    @test Tags.distance(m, Jaccard(), banana, fruit) ≈ 0
+    @test Tags.distance(m, CosineDist(), banana, fruit) ≈ 0
+    @test Tags.distance(m, Jaccard(), banana, food) ≈ 0.5
+    @test Tags.distance(m, CosineDist(), banana, food) ≈ 1 - 1/√2
+    @test Tags.distance(m, Jaccard(), banana, cabbage) ≈ 1
+    @test Tags.distance(m, CosineDist(), banana, cabbage) ≈ 1
 end

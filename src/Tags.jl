@@ -7,6 +7,7 @@ import Base: isless
 using Base.Iterators
 using AutoHashEquals
 using DataStructures
+using Distances
 using ..Common
 
 """
@@ -91,16 +92,36 @@ joint(m::TagMatrix, t1::Tag, t2::Tag) =
     m.correlation[tuple(sort([t1, t2])...)]
 joint(m::TagMatrix, t1, t2) = joint(m, tagobject(m, t1), tagobject(m, t2))
 
+
+"""
+    distance(m::TagMatrix, dist::SemiMetric, t::Tag, u::Tag)
+
+Compute the total distance between tags `t` and `u` using the given metric.
+Allowed metrics are Jaccard() and CosineDist() (which reduces to Ochiai
+coefficient).
+"""
+function distance(m::TagMatrix, ::Jaccard, t::Tag, u::Tag)
+    num = joint(m, t, u)
+    den = popularity(m, t) + popularity(m, u) - num
+    return 1.0 - num / den
+end
+
+function distance(m::TagMatrix, ::CosineDist, t::Tag, u::Tag)
+    num = joint(m, t, u)
+    den = √popularity(m, t) * √popularity(m, u)
+    return 1.0 - num / den
+end
+
 """
     relatedto(m::TagMatrix, tag, num=8)
 
 Return up to the top `num` tags related to `tag`.
 """
 function relatedto(m::TagMatrix, t::Tag, num=8)
-    top = [(tag, joint(m, t, tag)^2 / (popularity(m, tag) + 2))
+    top = [(tag, distance(m, Jaccard(), t, tag))
            for tag in tags(m) if tag != t]
-    filter!(x -> x[2] > 0, top)
-    sort!(top, by=x -> -x[2])
+    filter!(x -> x[2] < 1, top)
+    sort!(top, by=x -> x[2])
     take(top, num)
 end
 relatedto(m::TagMatrix, t, num=8) = relatedto(m, tagobject(m, t), num)
