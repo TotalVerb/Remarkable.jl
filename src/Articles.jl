@@ -3,7 +3,7 @@ module Articles
 """
 A particular item of publication.
 """
-abstract Article
+abstract type Article end
 
 function title end
 

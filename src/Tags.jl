@@ -14,7 +14,7 @@ using ..Common
 An individual tag object representing a category that objects can be classified
 under.
 """
-@auto_hash_equals immutable Tag
+@auto_hash_equals struct Tag
     name::String
 end
 
@@ -26,7 +26,7 @@ Return the canonical, user-friendly name of this tag.
 tagname(t::Tag) = t.name
 isless(t::Tag, u::Tag) = isless(tagname(t), tagname(u))
 
-immutable TagMatrix
+struct TagMatrix
     popularity::DefaultDict{Tag,Int,Int}
     correlation::DefaultDict{Tuple{Tag,Tag},Int,Int}
     uritable::Dict{String,Tag}
@@ -168,14 +168,14 @@ end
 populate!(m::TagMatrix, tags, value=1) =
     populate!(m, [tagobject(m, t) for t in tags], value)
 
-immutable TagTree
+struct TagTree
     root::Tag
     children::Vector{TagTree}
 end
 root(tr::TagTree) = tr.root
 children(tr::TagTree) = tr.children
 
-typealias TagForest Vector{TagTree}
+const TagForest = Vector{TagTree}
 
 function forest(m::TagMatrix, rset=collect(tags(m)))
     rset = sort(rset; by=x -> popularity(m, x), rev=true)
