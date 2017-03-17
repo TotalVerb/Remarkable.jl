@@ -22,7 +22,7 @@ function makeenv(ass=Dict(), modules=[])
         using SchemeSyntax
         using SchemeSyntax.RacketExtensions
         using SchemeSyntax.R5RS
-        import SExpressions.Htsx.StdLib
+        import Remarkable.Remark.StdLib
     end)
     for (k, v) in ass
         eval(Env, :($k = $v))

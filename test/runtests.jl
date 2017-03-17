@@ -52,3 +52,5 @@ using Remarkable.Tags
     @test Tags.distance(m, Jaccard(), banana, cabbage) ≈ 1
     @test Tags.distance(m, CosineDist(), banana, cabbage) ≈ 1
 end
+
+include("remark.jl")

@@ -1,0 +1,3 @@
+(include
+  ((.rendermd StdLib) "my [link to](http://example.com)")
+  #:object)
