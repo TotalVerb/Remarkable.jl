@@ -175,14 +175,10 @@ function gethiccupnode(head::Keyword, ρ, state)
     end
 end
 
-function tohiccup(α::List, state)
-    len = length(α)
-    if len < 1
-        error("Empty list not allowed here")
-    else
-        head = car(α)
-        gethiccupnode(head, cdr(α), state)
-    end
+tohiccup(::Nil, state) = error("Empty list not allowed here")
+function tohiccup(α::Cons, state)
+    head = car(α)
+    gethiccupnode(head, cdr(α), state)
 end
 
 tohiccup(s::String, state) = DOM.Node(s), state
