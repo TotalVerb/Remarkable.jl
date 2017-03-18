@@ -5,7 +5,7 @@ using SExpressions.Lists
 using SExpressions.Keywords
 using SchemeSyntax
 using Compat
-using Hiccup
+using Documenter.Utilities.DOM
 using FunctionalCollections: PersistentHashMap
 
 include("stdlib.jl")
@@ -87,7 +87,7 @@ function handleinclude(obj, kind::Keyword, state)
     elseif kind == Keyword("text")
         url = evaluate!(state, obj)
         file = relativeto(state, url)
-        readstring(file), state
+        tohiccup(readstring(file), state)
     else
         error("Unknown included object type $state")
     end
@@ -130,17 +130,17 @@ function gethiccupnode(head::Symbol, ρ, state)
     elseif head == :remarks
         handleremarks(ρ, state)
     elseif isnil(ρ)
-        Node(head, Dict(), []), state
+        DOM.Node(head, DOM.Attributes(0), DOM.Node[]), state
     else
         if islisty(car(ρ))  # is a list of attrs
-            attrs = Dict(car(β) => cadr(β) for β in car(ρ))
+            attrs = [car(β) => cadr(β) for β in car(ρ)]
             content, state = acc2(tohiccup, cdr(ρ), state)
         else  # is just another body element
-            attrs = Dict()
+            attrs = DOM.Attributes(0)
             content, state = acc2(tohiccup, ρ, state)
         end
         children = flattentree(content)
-        Node(head, attrs, children), state
+        DOM.Node(head, attrs, collect(DOM.Node, children)), state
     end
 end
 
@@ -183,9 +183,9 @@ function tohiccup(α::List, state)
     end
 end
 
-tohiccup(s::String, state) = s, state
+tohiccup(s::String, state) = DOM.Node(s), state
 tohiccup(s::AbstractString, state) = tohiccup(String(s), state)
-tohiccup(i::BigInt, state) = string(i), state
+tohiccup(i::Number, state) = tohiccup(string(i), state)
 tohiccup(::Void, state) = nothing, state
 
 tohiccup(x, state) = error("Can’t serialize $(repr(x))")
