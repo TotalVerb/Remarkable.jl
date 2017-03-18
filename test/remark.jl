@@ -138,4 +138,13 @@ end
 <p>Hello, World!</p>"""
 end
 
+@testset "Attributes" begin
+    @test rem"""
+(html ([lang "en"])
+  (body (textarea ([cols 10]))))
+""" == """
+<!DOCTYPE html>
+<html lang="en"><body><textarea cols="10"></textarea></body></html>"""
+end
+
 end

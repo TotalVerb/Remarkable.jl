@@ -114,9 +114,10 @@ function handleremarks(ρ, state)
     acc2(tohiccup, evaluateall!(state, ρ), state)
 end
 
-flattentree(::Void) = []
-flattentree(xs::ListOrArray) = vcat((flattentree(x) for x in xs)...)
-flattentree(x) = Any[x]
+flattentree(::Void) = DOM.Node[]
+flattentree(xs::ListOrArray)::Vector{DOM.Node} =
+    vcat((flattentree(x) for x in xs)...)
+flattentree(x) = DOM.Node[x]
 
 function gethiccupnode(head, ρ, state)
     error("Invalid HTSX head: $head")
@@ -133,7 +134,8 @@ function gethiccupnode(head::Symbol, ρ, state)
         DOM.Node(head, DOM.Attributes(0), DOM.Node[]), state
     else
         if islisty(car(ρ))  # is a list of attrs
-            attrs = [car(β) => cadr(β) for β in car(ρ)]
+            # TODO: allow dynamic attribute computation
+            attrs = [car(β) => string(cadr(β)) for β in car(ρ)]
             content, state = acc2(tohiccup, cdr(ρ), state)
         else  # is just another body element
             attrs = DOM.Attributes(0)
