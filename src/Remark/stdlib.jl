@@ -1,5 +1,8 @@
 module StdLib
 
+export include_markdown
+
+using ..RemarkStates
 using SExpressions.Lists
 using Documenter.Writers.HTMLWriter: mdconvert
 using Documenter.Utilities.DOM: Node, TEXT
@@ -16,5 +19,15 @@ else
     end
 end
 rendermd(x) = undomify(mdconvert(Base.Markdown.parse(x)))
+
+let state = nothing
+    global function setstate!(st)
+        state = st
+    end
+    global function include_markdown(filename)
+        file = relativeto(state, filename)
+        StdLib.rendermd(readstring(file))
+    end
+end
 
 end

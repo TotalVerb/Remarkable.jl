@@ -1,1 +1,1 @@
-(include "test.md" #:markdown)
+(remark (include-markdown "test.md"))

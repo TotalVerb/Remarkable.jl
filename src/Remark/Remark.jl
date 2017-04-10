@@ -8,7 +8,9 @@ using Compat
 using Documenter.Utilities.DOM
 using FunctionalCollections: PersistentHashMap
 
+include("RemarkStates.jl")
 include("stdlib.jl")
+using .RemarkStates
 
 const ListOrArray = Union{List, Array}
 
@@ -22,7 +24,7 @@ function makeenv(ass=Dict(), modules=[])
         using SchemeSyntax
         using SchemeSyntax.RacketExtensions
         using SchemeSyntax.R5RS
-        import Remarkable.Remark.StdLib
+        using Remarkable.Remark.StdLib
     end)
     for (k, v) in ass
         eval(Env, :($k = $v))
@@ -34,20 +36,6 @@ function makeenv(ass=Dict(), modules=[])
     Env
 end
 
-struct RemarkState
-    env::Module
-    file::String
-end
-getvar(s::RemarkState, v::Symbol) = getfield(s.env, v)
-evaluate!(s::RemarkState, ex) = eval(s.env, tojulia(ex))
-function evaluateall!(state, ρ)
-    local data
-    for α in ρ
-        data = evaluate!(state, α)
-    end
-    data
-end
-relativeto(s::RemarkState, f) = joinpath(dirname(s.file), f)
 
 setindex(x, y, z) = assoc(x, z, y)
 
@@ -75,10 +63,8 @@ function handleinclude(obj, kind::Keyword, state)
         data = evaluate!(state, obj)
         tohiccup(data, state)
     elseif kind == Keyword("markdown")
-        url = evaluate!(state, obj)
-        file = relativeto(state, url)
-        data = StdLib.rendermd(readstring(file))
-        tohiccup(data, state)
+        Base.depwarn("(include x #:markdown) is deprecated; use instead (remark (include-markdown x))", :include_markdown)
+        tohiccup(list(:remark, list(:include_markdown, obj)), state)
     elseif kind == Keyword("remark")
         url = evaluate!(state, obj)
         file = relativeto(state, url)
@@ -104,6 +90,7 @@ function handleremark(ρ, state)
     if isempty(ρ)
         error("remark requires a nonempty body expression")
     end
+    StdLib.setstate!(state)
     tohiccup(evaluateall!(state, ρ), state)
 end
 
@@ -111,8 +98,11 @@ function handleremarks(ρ, state)
     if isempty(ρ)
         error("remarks requires a nonempty body expression")
     end
+    StdLib.setstate!(state)
     result = evaluateall!(state, ρ)
-    if result !== nothing
+    if result === nothing
+        nothing, state
+    else
         acc2(tohiccup, result, state)
     end
 end
