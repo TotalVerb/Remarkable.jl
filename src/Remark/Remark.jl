@@ -111,7 +111,10 @@ function handleremarks(ρ, state)
     if isempty(ρ)
         error("remarks requires a nonempty body expression")
     end
-    acc2(tohiccup, evaluateall!(state, ρ), state)
+    result = evaluateall!(state, ρ)
+    if result !== nothing
+        acc2(tohiccup, result, state)
+    end
 end
 
 flattentree(::Void) = DOM.Node[]
@@ -151,6 +154,7 @@ function gethiccupnode(head::Keyword, ρ, state)
     if head == Keyword("template")
         tohiccup(evaluate!(state, cons(car(ρ), quoted ⊚ cdr(ρ))), state)
     elseif head == Keyword("when")
+        Base.depwarn("(#:when x y) is deprecated; use (remarks (when x `(y)))", :when)
         cond = car(ρ)
         if evaluate!(state, cond)
             acc2(tohiccup, cdr(ρ), state)

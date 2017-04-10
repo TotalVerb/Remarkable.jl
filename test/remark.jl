@@ -39,11 +39,11 @@ end
 
 @testset "When" begin
 @test rem"""
-(#:when (defined? 'x)
-  (p "yes 1"))
+(remark (when (defined? 'x)
+               `(p "yes 1")))
 (remark (define (x y) y))
-(#:when (defined? 'x)
-  (p "yes 2"))
+(remark (when (defined? 'x)
+              `(p "yes 2")))
 """ == """
 <!DOCTYPE html>
 <p>yes 2</p>"""
