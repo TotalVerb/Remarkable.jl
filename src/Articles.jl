@@ -33,8 +33,7 @@ title(m::ArticleMetadata) = m.title
 tags(m::ArticleMetadata) = m.tags
 authors(m::ArticleMetadata) = m.authors
 datetime(m::ArticleMetadata) = m.datetime
-function tag!(m::ArticleMetadata, tm::TagMatrix,
-              ts::Vector{<:AbstractString})
+function tag!(m::ArticleMetadata, tm::TagMatrix, ts)
     tos = tagobject.(tm, ts)
     append!(m.tags, tos)
     populate!(tm, tos)
