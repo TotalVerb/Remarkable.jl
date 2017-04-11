@@ -1,5 +1,6 @@
 module Remark
 
+using EnglishText: SemanticText
 using SExpressions.Parser
 using SExpressions.Lists
 using SExpressions.Keywords
@@ -177,6 +178,7 @@ end
 
 tohiccup(s::String, state) = DOM.Node(s), state
 tohiccup(s::AbstractString, state) = tohiccup(String(s), state)
+tohiccup(s::SemanticText, state) = tohiccup(string(s), state)
 tohiccup(i::Number, state) = tohiccup(string(i), state)
 tohiccup(::Void, state) = nothing, state
 

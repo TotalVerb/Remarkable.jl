@@ -1,4 +1,5 @@
 using SExpressions
+using EnglishText
 
 macro rem_str(s::String)
     Remarkable.Remark.tohtml(SExpressions.parses(s))
@@ -85,6 +86,14 @@ end
 """ == """
 <!DOCTYPE html>
 <p>0</p>"""
+
+sprint() do io
+    Remarkable.Remark.tohtml(io, SExpressions.parses("""
+    (p (remark (ItemList "x" "y")))
+    """); modules=[EnglishText])
+end == """
+<!DOCTYPE html>
+<p>x and y</p>"""
 end
 
 @testset "Remarks" begin
