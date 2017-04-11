@@ -50,13 +50,13 @@ end
 <p>yes 2</p>"""
 
 @test rem"""
-(p (include (when (< 1 2) (define x 1) (+ x x)) #:object))
+(p (remark (when (< 1 2) (define x 1) (+ x x))))
 """ == """
 <!DOCTYPE html>
 <p>2</p>"""
 
 @test rem"""
-(p (include (when (> 1 2) "Hello") #:object))
+(p (remark (when (> 1 2) "Hello")))
 """ == """
 <!DOCTYPE html>
 <p></p>"""

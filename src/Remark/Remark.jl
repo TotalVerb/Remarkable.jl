@@ -61,17 +61,16 @@ end
 
 function handleinclude(obj, kind::Keyword, state)
     if kind == Keyword("object")
+        Base.depwarn("(include x #:object) is deprecated; use (remark x)", :object)
         data = evaluate!(state, obj)
         tohiccup(data, state)
-    elseif kind == Keyword("markdown")
-        Base.depwarn("(include x #:markdown) is deprecated; use instead (remark (include-markdown x))", :include_markdown)
-        tohiccup(list(:remark, list(:include_markdown, obj)), state)
     elseif kind == Keyword("remark")
         url = evaluate!(state, obj)
         file = relativeto(state, url)
         α = Parser.parsefile(file)
         acc2(tohiccup, α, state)
     elseif kind == Keyword("text")
+        Base.depwarn("(include x #:text) is deprecated; use (remark (readstring x))", :text)
         url = evaluate!(state, obj)
         file = relativeto(state, url)
         tohiccup(readstring(file), state)
@@ -144,14 +143,6 @@ quoted(x) = list(:quote, x)
 function gethiccupnode(head::Keyword, ρ, state)
     if head == Keyword("template")
         tohiccup(evaluate!(state, cons(car(ρ), quoted ⊚ cdr(ρ))), state)
-    elseif head == Keyword("when")
-        Base.depwarn("(#:when x y) is deprecated; use (remarks (when x `(y)))", :when)
-        cond = car(ρ)
-        if evaluate!(state, cond)
-            acc2(tohiccup, cdr(ρ), state)
-        else
-            nothing, state
-        end
     elseif head == Keyword("each")
         var, array, code = ρ
         doms = eval(state.env, quote

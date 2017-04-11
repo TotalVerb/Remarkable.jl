@@ -1,1 +1,1 @@
-(script (include "literal.js" #:text))
+(script (remark (include-text "literal.js")))

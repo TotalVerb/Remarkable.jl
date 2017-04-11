@@ -1,1 +1,1 @@
-(include `(p "Hello, World!") #:object)
+(remark `(p "Hello, World!"))

@@ -1,6 +1,6 @@
 module StdLib
 
-export include_markdown
+export include_markdown, include_text
 
 using ..RemarkStates
 using SExpressions.Lists
@@ -27,6 +27,9 @@ let state = nothing
     global function include_markdown(filename)
         file = relativeto(state, filename)
         StdLib.rendermd(readstring(file))
+    end
+    global function include_text(filename)
+        readstring(relativeto(state, filename))
     end
 end
 
