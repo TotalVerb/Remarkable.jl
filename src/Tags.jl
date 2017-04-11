@@ -189,7 +189,9 @@ function forest(m::TagMatrix, rset=collect(tags(m)))
     result
 end
 
+function tag! end
+
 export TagMatrix, joint, relatedto, populate!, popular, subtags, tags, forest,
-       root, children, tagname, Tag, tagobject
+       root, children, tagname, Tag, tagobject, tag!
 
 end
