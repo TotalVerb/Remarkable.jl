@@ -2,7 +2,7 @@ using SExpressions
 using EnglishText
 
 macro rem_str(s::String)
-    Remarkable.Remark.tohtml(SExpressions.parses(s))
+    Remarkable.Remark.tohtml(SExpressions.parseall(s))
 end
 
 @testset "Remark" begin
@@ -88,7 +88,7 @@ end
 <p>0</p>"""
 
 sprint() do io
-    Remarkable.Remark.tohtml(io, SExpressions.parses("""
+    Remarkable.Remark.tohtml(io, SExpressions.parseall("""
     (p (remark (ItemList "x" "y")))
     """); modules=[EnglishText])
 end == """
