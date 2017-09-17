@@ -29,7 +29,7 @@ let state = nothing
         StdLib.rendermd(read(file, String))
     end
     global function include_text(filename)
-        readstring(relativeto(state, filename))
+        read(relativeto(state, filename), String)
     end
 end
 
