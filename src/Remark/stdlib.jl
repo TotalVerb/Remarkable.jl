@@ -26,7 +26,7 @@ let state = nothing
     end
     global function include_markdown(filename)
         file = relativeto(state, filename)
-        StdLib.rendermd(readstring(file))
+        StdLib.rendermd(read(file, String))
     end
     global function include_text(filename)
         readstring(relativeto(state, filename))
