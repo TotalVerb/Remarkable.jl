@@ -40,10 +40,10 @@ end
 
 @testset "When" begin
 @test rem("""
-(remark (when (defined? 'x)
+(remark (when (defined? x)
                `(p "yes 1")))
 (remark (define (x y) y))
-(remark (when (defined? 'x)
+(remark (when (defined? x)
               `(p "yes 2")))
 """) == """
 <!DOCTYPE html>

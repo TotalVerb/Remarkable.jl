@@ -23,7 +23,7 @@ struct ArticleMetadata
     authors    :: Vector{String}
 
     "A time indicating when the event took place."
-    datetime   :: DateTime
+    datetime   :: Dates.TimeType
 
     ArticleMetadata(identifier, title, authors, datetime) =
         new(identifier, title, Tag[], authors, datetime)
