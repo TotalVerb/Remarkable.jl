@@ -60,20 +60,11 @@ function acc2(f, xs, acc)
 end
 
 function handleinclude(obj, kind::Keyword, state)
-    if kind == Keyword("object")
-        Base.depwarn("(include x #:object) is deprecated; use (remark x)", :object)
-        data = evaluate!(state, obj)
-        tohiccup(data, state)
-    elseif kind == Keyword("remark")
+    if kind == Keyword("remark")
         url = evaluate!(state, obj)
         file = relativeto(state, url)
         α = Parser.parsefile(file)
         acc2(tohiccup, α, state)
-    elseif kind == Keyword("text")
-        Base.depwarn("(include x #:text) is deprecated; use (remark (readstring x))", :text)
-        url = evaluate!(state, obj)
-        file = relativeto(state, url)
-        tohiccup(readstring(file), state)
     else
         error("Unknown included object type $state")
     end
