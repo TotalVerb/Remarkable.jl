@@ -133,6 +133,7 @@ end
 quoted(x) = list(:quote, x)
 function gethiccupnode(head::Keyword, ρ, state)
     if head == Keyword("template")
+        Base.depwarn("#:template is deprecated, use (remark) instead")
         tohiccup(evaluate!(state, cons(car(ρ), quoted ⊚ cdr(ρ))), state)
     elseif head == Keyword("each")
         var, array, code = ρ
