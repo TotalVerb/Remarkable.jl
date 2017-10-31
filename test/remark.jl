@@ -20,8 +20,8 @@ end
 (remark
   (define (foo-bar x y) (string (+ x y))))
 (html ([lang "en"])
-  (head (title "Page " (#:template foo-bar 1 1))
-  (body (p "This is page " (#:template foo-bar 1 1) "."))))
+  (head (title "Page " (remark (foo-bar 1 1)))
+  (body (p "This is page " (remark (foo-bar 1 1)) "."))))
 """) == """
 <!DOCTYPE html>
 <html lang="en"><head><title>Page 2</title><body><p>This is page 2.</p></body></head></html>"""
@@ -32,7 +32,7 @@ end
   (define (n^4 x) (* (sqr x) (sqr x)))
   (define (test x) (string (n^4 x))))
 (html ([lang "en"])
-  (title (#:template test 10))
+  (title (remark (test 10)))
   (p "test"))
 """) == """
 <!DOCTYPE html>

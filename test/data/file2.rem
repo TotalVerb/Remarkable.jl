@@ -1,2 +1,2 @@
 (remark (define (bar x) (+ x x)))
-(p "File 2: " (#:template foo 10))
+(p "File 2: " (remark (foo 10)))
