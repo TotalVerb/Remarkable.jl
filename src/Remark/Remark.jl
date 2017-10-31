@@ -118,8 +118,8 @@ function gethiccupnode(head::Symbol, ρ, state)
         DOM.Node(head, DOM.Attributes(0), DOM.Node[]), state
     else
         if islisty(car(ρ))  # is a list of attrs
-            # TODO: allow dynamic attribute computation
-            attrs = [car(β) => string(cadr(β)) for β in car(ρ)]
+            attrs = [car(β) => string(evaluate!(state, cadr(β)))
+                     for β in car(ρ)]
             content, state = acc2(tohiccup, cdr(ρ), state)
         else  # is just another body element
             attrs = DOM.Attributes(0)
@@ -138,9 +138,7 @@ function gethiccupnode(head::Keyword, ρ, state)
     elseif head == Keyword("each")
         var, array, code = ρ
         doms = eval(state.env, quote
-            map($(tojulia(array))) do $var
-                $(tojulia(code))
-            end
+            [$(tojulia(code)) for $var in $(tojulia(array))]
         end)
         objects = []
         for dom in doms
