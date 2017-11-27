@@ -4,8 +4,8 @@ using EnglishText: SemanticText
 using SExpressions.Parser
 using SExpressions.Lists
 using SExpressions.Keywords
+using Dates
 using SchemeSyntax
-using Compat
 using Documenter.Utilities.DOM
 using FunctionalCollections: PersistentHashMap
 
