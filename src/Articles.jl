@@ -3,6 +3,7 @@ module Articles
 export Article, ArticleMetadata, title, tags, identifier, location,
        datetime, authors, LivePerformance
 
+using Dates
 using ..Tags: Tag, TagMatrix, populate!, tagobject
 import ..Tags: tags, tag!
 
