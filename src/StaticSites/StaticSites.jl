@@ -1,5 +1,6 @@
 module StaticSites
 
+using Dates
 using ..Remark
 export StaticSite, generate_page, prepare
 
