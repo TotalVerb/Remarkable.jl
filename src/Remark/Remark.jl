@@ -98,7 +98,7 @@ function handleremarks(ρ, state)
     end
 end
 
-flattentree(::Void) = DOM.Node[]
+flattentree(::Nothing) = DOM.Node[]
 flattentree(xs::ListOrArray)::Vector{DOM.Node} =
     vcat((flattentree(x) for x in xs)...)
 flattentree(x) = DOM.Node[x]
@@ -161,7 +161,7 @@ tohiccup(s::String, state) = DOM.Node(s), state
 tohiccup(s::AbstractString, state) = tohiccup(String(s), state)
 tohiccup(s::SemanticText, state) = tohiccup(string(s), state)
 tohiccup(i::Number, state) = tohiccup(string(i), state)
-tohiccup(::Void, state) = nothing, state
+tohiccup(::Nothing, state) = nothing, state
 
 tohiccup(x, state) = error("Can’t serialize $(repr(x))")
 
