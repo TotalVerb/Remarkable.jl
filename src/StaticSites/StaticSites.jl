@@ -43,7 +43,7 @@ end
 
 function generate_page(site::StaticSite,
                        destination, page=site.default_page;
-                       data::Associative{Symbol}=Dict{Symbol}(),
+                       data::AbstractDict{Symbol}=Dict{Symbol}(),
                        modules=[])
     start = Dates.now()
     info(isempty(destination) ? "Index Page" : destination;
