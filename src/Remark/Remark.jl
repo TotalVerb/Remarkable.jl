@@ -31,8 +31,8 @@ function makeenv(ass=Dict(), modules=[])
         eval(Env, :($k = $v))
     end
     for touse in modules
-        eval(Env, :(const $(module_name(touse)) = $touse))
-        eval(Env, :(using .$(module_name(touse))))
+        eval(Env, :(const $(nameof(touse)) = $touse))
+        eval(Env, :(using .$(nameof(touse))))
     end
     Env
 end

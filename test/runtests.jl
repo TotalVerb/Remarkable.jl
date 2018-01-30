@@ -1,5 +1,5 @@
 using Remarkable
-using Base.Test
+using Test
 using Distances
 
 using Remarkable.Common
