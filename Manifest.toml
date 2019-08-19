@@ -60,6 +60,12 @@ git-tree-sha1 = "580155ffaeb175f37dc0bd31ed6c127663efbc60"
 uuid = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 version = "0.22.6"
 
+[[EnglishText]]
+deps = ["JSON", "Test"]
+git-tree-sha1 = "9dfa0d099f42b8110a26b299ebaa4cead2956fb2"
+uuid = "a9e4a3a0-3b51-51f6-8ce2-a898b8c5b12e"
+version = "0.6.0"
+
 [[EzXML]]
 deps = ["BinaryProvider", "Libdl", "Printf"]
 git-tree-sha1 = "724e13b7522563a18ae4a5cc4a9792ae3b0da3e6"
@@ -149,7 +155,7 @@ uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 
 [[SchemeSyntax]]
 deps = ["Markdown", "SExpressions"]
-git-tree-sha1 = "1791ce9b8fda6f79a86d74462205f2ff1a6eca0f"
+git-tree-sha1 = "22d3110d0bc37f1c8fc6496cf617fba9687c5bf7"
 repo-rev = "master"
 repo-url = "https://github.com/TotalVerb/SchemeSyntax.jl.git"
 uuid = "ae6fee66-c21b-11e9-21f5-f142c7f3686e"

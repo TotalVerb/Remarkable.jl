@@ -1,13 +1,14 @@
 module Remark
 
+using Base64
+using Dates
+using Documenter.Utilities.DOM
 using EnglishText: SemanticText
+using FunctionalCollections: PersistentHashMap
+using SchemeSyntax
 using SExpressions.Parser
 using SExpressions.Lists
 using SExpressions.Keywords
-using Dates
-using SchemeSyntax
-using Documenter.Utilities.DOM
-using FunctionalCollections: PersistentHashMap
 
 include("RemarkStates.jl")
 include("stdlib.jl")
@@ -17,7 +18,7 @@ const ListOrArray = Union{List, Array}
 
 function makeenv(ass=Dict(), modules=[])
     Env = Module(gensym(:Env))
-    eval(Env, quote
+    Core.eval(Env, quote
         using Compat
         using Base.Iterators
         using SExpressions.Lists
@@ -28,11 +29,11 @@ function makeenv(ass=Dict(), modules=[])
         using Remarkable.Remark.StdLib
     end)
     for (k, v) in ass
-        eval(Env, :($k = $v))
+        Core.eval(Env, :(const $k = $v))
     end
     for touse in modules
-        eval(Env, :(const $(nameof(touse)) = $touse))
-        eval(Env, :(using .$(nameof(touse))))
+        Core.eval(Env, :(const $(nameof(touse)) = $touse))
+        Core.eval(Env, :(using .$(nameof(touse))))
     end
     Env
 end
@@ -122,7 +123,7 @@ function gethiccupnode(head::Symbol, ρ, state)
                      for β in car(ρ)]
             content, state = acc2(tohiccup, cdr(ρ), state)
         else  # is just another body element
-            attrs = DOM.Attributes(0)
+            attrs = DOM.Attributes(undef, 0)
             content, state = acc2(tohiccup, ρ, state)
         end
         children = flattentree(content)
@@ -137,7 +138,7 @@ function gethiccupnode(head::Keyword, ρ, state)
         tohiccup(evaluate!(state, cons(car(ρ), quoted ⊚ cdr(ρ))), state)
     elseif head == Keyword("each")
         var, array, code = ρ
-        doms = eval(state.env, quote
+        doms = Core.eval(state.env, quote
             [$(tojulia(code)) for $var in $(tojulia(array))]
         end)
         objects = []

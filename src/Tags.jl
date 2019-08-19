@@ -8,6 +8,7 @@ using Base.Iterators
 using AutoHashEquals
 using DataStructures
 using Distances
+using Unicode
 using ..Common
 
 """
@@ -44,7 +45,7 @@ Obtain the `Tag` object corresponding to `t` from matrix `m`.
 """
 function tagobject(m::TagMatrix, t::AbstractString)
     # Normalize the display name of the tag
-    t = normalize_string(t, :NFKC)
+    t = Unicode.normalize(t, :NFKC)
 
     # Normalize the tag name further to a URI-suitable variant
     uri = urinormalize(t)
@@ -181,7 +182,7 @@ function forest(m::TagMatrix, rset=collect(tags(m)))
     rset = sort(rset; by=x -> popularity(m, x), rev=true)
     result = TagForest()
     while !isempty(rset)
-        top = shift!(rset)
+        top = popfirst!(rset)
         lower = filter(x -> issubtag(m, x, top), rset)
         rset = filter(x -> !issubtag(m, x, top), rset)
         push!(result, TagTree(top, forest(m, lower)))

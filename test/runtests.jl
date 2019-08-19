@@ -17,11 +17,11 @@ using Remarkable.Tags
 
     # populate with a single item
     populate!(m, ["car", "vehicle"])
-    @test map(tagname, Set(tags(m))) == Set(["car", "vehicle"])
+    @test Set((tagname(t) for t in tags(m))) == Set(["car", "vehicle"])
 
     # populate with an item of higher weight
     populate!(m, ["bicycle", "vehicle"], 2)
-    @test map(tagname, Set(tags(m))) == Set(["car", "bicycle", "vehicle"])
+    @test Set((tagname(t) for t in tags(m))) == Set(["car", "bicycle", "vehicle"])
     @test Tags.popularity(m, "bicycle") == 2
     @test Tags.popularity(m, "vehicle") == 3
     @test tagname.(popular(m)) == ["vehicle", "bicycle", "car"]

@@ -7,7 +7,7 @@ struct RemarkState
     file::String
 end
 getvar(s::RemarkState, v::Symbol) = getfield(s.env, v)
-evaluate!(s::RemarkState, ex) = eval(s.env, tojulia(ex))
+evaluate!(s::RemarkState, ex) = Core.eval(s.env, tojulia(ex))
 function evaluateall!(state, ρ)
     local data
     for α in ρ

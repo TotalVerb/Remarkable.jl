@@ -5,10 +5,22 @@ version = "0.1.0"
 
 [deps]
 AutoHashEquals = "15f4f7f2-30c1-5605-9d31-71845cf9641f"
+Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
+Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+EnglishText = "a9e4a3a0-3b51-51f6-8ce2-a898b8c5b12e"
+FunctionalCollections = "de31a74c-ac4f-5751-b3fd-e18cd04993ca"
+Markdown = "d6f4376e-aef5-505a-96c1-9c027394607a"
 SExpressions = "eaa8e424-c5f6-11e8-1b3d-d576ba0eee97"
 SchemeSyntax = "ae6fee66-c21b-11e9-21f5-f142c7f3686e"
 TimeZones = "f269a46b-ccf7-5d73-abea-4c690281aa53"
+Unicode = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

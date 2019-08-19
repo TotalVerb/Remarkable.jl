@@ -35,7 +35,7 @@ tags(m::ArticleMetadata) = m.tags
 authors(m::ArticleMetadata) = m.authors
 datetime(m::ArticleMetadata) = m.datetime
 function tag!(m::ArticleMetadata, tm::TagMatrix, ts)
-    tos = tagobject.(tm, ts)
+    tos = [tagobject(tm, t) for t in ts]
     append!(m.tags, tos)
     populate!(tm, tos)
 end
