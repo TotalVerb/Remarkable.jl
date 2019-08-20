@@ -116,7 +116,7 @@ function gethiccupnode(head::Symbol, ρ, state)
     elseif head == :remarks
         handleremarks(ρ, state)
     elseif isnil(ρ)
-        DOM.Node(head, DOM.Attributes(0), DOM.Node[]), state
+        DOM.Node(head, DOM.Attributes(undef, 0), DOM.Node[]), state
     else
         if islisty(car(ρ))  # is a list of attrs
             attrs = [car(β) => string(evaluate!(state, cadr(β)))

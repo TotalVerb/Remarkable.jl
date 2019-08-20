@@ -7,6 +7,7 @@ end
 
 @testset "Remark" begin
 
+@testset "Just HTML" begin
 @test sx"""
 (html ([lang "en"])
   (head (title "Hello World!"))
@@ -17,14 +18,23 @@ end
         (:body, (:p, "This is my first Remark page"))))
 
 @test rem("""
+(html ([lang "en"])
+  (head (title "Page"))
+  (body (p "This is a poem" (br) "Line 2")))
+""") == """
+<!DOCTYPE html>
+<html lang="en"><head><title>Page</title></head><body><p>This is a poem<br/>Line 2</p></body></html>"""
+end
+
+@test rem("""
 (remark
   (define (foo-bar x y) (string (+ x y))))
 (html ([lang "en"])
-  (head (title "Page " (remark (foo-bar 1 1)))
-  (body (p "This is page " (remark (foo-bar 1 1)) "."))))
+  (head (title "Page " (remark (foo-bar 1 1))))
+  (body (p "This is page " (remark (foo-bar 1 1)) ".")))
 """) == """
 <!DOCTYPE html>
-<html lang="en"><head><title>Page 2</title><body><p>This is page 2.</p></body></head></html>"""
+<html lang="en"><head><title>Page 2</title></head><body><p>This is page 2.</p></body></html>"""
 
 @test rem("""
 (remark
