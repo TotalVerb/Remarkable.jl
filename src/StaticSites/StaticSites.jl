@@ -1,6 +1,7 @@
 module StaticSites
 
 using Dates
+using Logging
 using ..Remark
 export StaticSite, generate_page, prepare
 
@@ -34,10 +35,10 @@ Prepare the site for page generation by:
 function prepare(site::StaticSite)
     mkpath(site.target_root)
     for file in readdir(site.static_root)
-        info(file; prefix="COPYING: ")
+        @info "Copying static file" file
         cp(joinpath(site.static_root, file),
            joinpath(site.target_root, file);
-           remove_destination=true)
+           force=true)
     end
 end
 
@@ -46,8 +47,8 @@ function generate_page(site::StaticSite,
                        data::AbstractDict{Symbol}=Dict{Symbol}(),
                        modules=[])
     start = Dates.now()
-    info(isempty(destination) ? "Index Page" : destination;
-         prefix="GENERATING: ")
+    description = isempty(destination) ? "Index page" : destination
+    @debug "Started generating remark page" start page=description
 
     location = joinpath(site.target_root, destination)
     mkpath(location)
@@ -62,7 +63,7 @@ function generate_page(site::StaticSite,
     end
 
     finish = Dates.now()
-    println(lpad("done in $(lpad(finish - start, 17))", displaysize(STDERR)[2]))
+    @info "Generated remark page" elapsed=(finish - start) page=description
 end
 
 end

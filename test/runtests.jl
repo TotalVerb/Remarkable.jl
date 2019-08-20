@@ -55,3 +55,4 @@ end
 
 include("articles.jl")
 include("remark.jl")
+include("StaticSites/StaticSites.jl")

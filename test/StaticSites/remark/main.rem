@@ -1,0 +1,7 @@
+(html ([lang "en"])
+  (head
+    (meta ([charset "utf-8"]))
+    (title (remark pagetitle)))
+  (body
+    (h1 (remark pagetitle))
+    (p "This is an example page.")))
