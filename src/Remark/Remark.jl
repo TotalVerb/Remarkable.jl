@@ -19,7 +19,6 @@ const ListOrArray = Union{List, Array}
 function makeenv(ass=Dict(), modules=[])
     Env = Module(gensym(:Env))
     Core.eval(Env, quote
-        using Compat
         using Base.Iterators
         using SExpressions.Lists
         using SExpressions.Keywords
