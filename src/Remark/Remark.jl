@@ -66,7 +66,7 @@ function handleinclude(obj, kind::Keyword, state)
         α = Parser.parsefile(file)
         acc2(domify, α, state)
     else
-        error("Unknown included object type $state")
+        error("Unknown included object type $kind")
     end
 end
 
@@ -152,10 +152,7 @@ end
 
 quoted(x) = list(:quote, x)
 function domify(head::Keyword, ρ, state)
-    if head == Keyword("template")
-        Base.depwarn("#:template is deprecated, use (remark) instead", :template)
-        domify(evaluate!(state, cons(car(ρ), quoted ⊚ cdr(ρ))), state)
-    elseif head == Keyword("each")
+    if head == Keyword("each")
         var, array, code = ρ
         doms = Core.eval(state.env, quote
             [$(tojulia(code)) for $var in $(tojulia(array))]

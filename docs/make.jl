@@ -1,13 +1,16 @@
-using Documenter
-using Remarkable
+using Documenter, Remarkable
 
-makedocs(
-    modules = [Remarkable]
+makedocs(;
+    modules  = [Remarkable],
+    format   = Documenter.HTML(analytics = "UA-68884109-1"),
+    pages    = [
+        "Home" => "index.md",
+    ],
+    repo     = "https://github.com/TotalVerb/Remarkable.jl/blob/{commit}{path}#L{line}",
+    sitename = "Remarkable.jl",
+    authors  = "Fengyang Wang",
 )
 
-# Documenter can also automatically deploy documentation to gh-pages.
-# See "Hosting Documentation" and deploydocs() in the Documenter manual
-# for more information.
-#=deploydocs(
-    repo = "<repository url>"
-)=#
+deploydocs(
+    repo = "github.com/TotalVerb/Remarkable.jl",
+)
