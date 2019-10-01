@@ -20,10 +20,12 @@ end
 @test rem("""
 (html ([lang "en"])
   (head (title "Page"))
-  (body (p "This is a poem" (br) "Line 2")))
+  (body
+    (p "This is a poem" (br) "Line 2"
+       (button ([disabled]) "disabled button"))))
 """) == """
 <!DOCTYPE html>
-<html lang="en"><head><title>Page</title></head><body><p>This is a poem<br/>Line 2</p></body></html>"""
+<html lang="en"><head><title>Page</title></head><body><p>This is a poem<br/>Line 2<button disabled>disabled button</button></p></body></html>"""
 end
 
 @test rem("""

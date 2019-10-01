@@ -64,7 +64,7 @@ function handleinclude(obj, kind::Keyword, state)
         url = evaluate!(state, obj)
         file = relativeto(state, url)
         α = Parser.parsefile(file)
-        acc2(tohiccup, α, state)
+        acc2(domify, α, state)
     else
         error("Unknown included object type $state")
     end
@@ -82,7 +82,7 @@ function handleremark(ρ, state)
         error("remark requires a nonempty body expression")
     end
     StdLib.setstate!(state)
-    tohiccup(evaluateall!(state, ρ), state)
+    domify(evaluateall!(state, ρ), state)
 end
 
 function handleremarks(ρ, state)
@@ -94,7 +94,7 @@ function handleremarks(ρ, state)
     if result === nothing
         nothing, state
     else
-        acc2(tohiccup, result, state)
+        acc2(domify, result, state)
     end
 end
 
@@ -103,11 +103,32 @@ flattentree(xs::ListOrArray)::Vector{DOM.Node} =
     vcat((flattentree(x) for x in xs)...)
 flattentree(x) = DOM.Node[x]
 
-function gethiccupnode(head, ρ, state)
+"""
+Evaluate a single entry in an attribute list.
+
+Supported syntax is:
+
+ - [class "value"] ⇒ equivalent to `class="value"` in HTML
+ - [disabled]      ⇒ equivalent to `disabled=""`, or just `disabled`, in HTML
+
+The value, if specified, can be any expression.
+"""
+function attribute(β, state)
+    if length(β) == 1
+        car(β) => ""
+    elseif length(β) == 2
+        attr, expr = β
+        attr => string(evaluate!(state, expr))
+    else
+        throw(ArgumentError("Expected [attr] or [attr \"value\"], got $β"))
+    end
+end
+
+function domify(head, ρ, state)
     error("Invalid HTSX head: $head")
 end
 
-function gethiccupnode(head::Symbol, ρ, state)
+function domify(head::Symbol, ρ, state)
     if head == :include
         handleinclude(ρ, state)
     elseif head == :remark
@@ -118,12 +139,11 @@ function gethiccupnode(head::Symbol, ρ, state)
         DOM.Node(head, DOM.Attributes(undef, 0), DOM.Node[]), state
     else
         if islisty(car(ρ))  # is a list of attrs
-            attrs = [car(β) => string(evaluate!(state, cadr(β)))
-                     for β in car(ρ)]
-            content, state = acc2(tohiccup, cdr(ρ), state)
+            attrs = [attribute(β, state) for β in car(ρ)]
+            content, state = acc2(domify, cdr(ρ), state)
         else  # is just another body element
             attrs = DOM.Attributes(undef, 0)
-            content, state = acc2(tohiccup, ρ, state)
+            content, state = acc2(domify, ρ, state)
         end
         children = flattentree(content)
         DOM.Node(head, attrs, collect(DOM.Node, children)), state
@@ -131,10 +151,10 @@ function gethiccupnode(head::Symbol, ρ, state)
 end
 
 quoted(x) = list(:quote, x)
-function gethiccupnode(head::Keyword, ρ, state)
+function domify(head::Keyword, ρ, state)
     if head == Keyword("template")
         Base.depwarn("#:template is deprecated, use (remark) instead", :template)
-        tohiccup(evaluate!(state, cons(car(ρ), quoted ⊚ cdr(ρ))), state)
+        domify(evaluate!(state, cons(car(ρ), quoted ⊚ cdr(ρ))), state)
     elseif head == Keyword("each")
         var, array, code = ρ
         doms = Core.eval(state.env, quote
@@ -142,7 +162,7 @@ function gethiccupnode(head::Keyword, ρ, state)
         end)
         objects = []
         for dom in doms
-            res, state = acc2(tohiccup, dom, state)
+            res, state = acc2(domify, dom, state)
             push!(objects, res)
         end
         objects, state
@@ -151,22 +171,22 @@ function gethiccupnode(head::Keyword, ρ, state)
     end
 end
 
-tohiccup(::Nil, state) = error("Empty list not allowed here")
-function tohiccup(α::Cons, state)
+domify(::Nil, state) = error("Empty list not allowed here")
+function domify(α::Cons, state)
     head = car(α)
-    gethiccupnode(head, cdr(α), state)
+    domify(head, cdr(α), state)
 end
 
-tohiccup(s::String, state) = DOM.Node(s), state
-tohiccup(s::AbstractString, state) = tohiccup(String(s), state)
-tohiccup(s::SemanticText, state) = tohiccup(string(s), state)
-tohiccup(i::Number, state) = tohiccup(string(i), state)
-tohiccup(::Nothing, state) = nothing, state
+domify(s::String, state) = DOM.Node(s), state
+domify(s::AbstractString, state) = domify(String(s), state)
+domify(s::SemanticText, state) = domify(string(s), state)
+domify(i::Number, state) = domify(string(i), state)
+domify(::Nothing, state) = nothing, state
 
-tohiccup(x, state) = error("Can’t serialize $(repr(x))")
+domify(x, state) = error("Can’t serialize $(repr(x))")
 
-function show_html(io::IO, ashiccup)
-    join(io, (stringmime("text/html", p) for p in ashiccup))
+function show_html(io::IO, dom)
+    join(io, (stringmime("text/html", p) for p in dom))
 end
 
 function tohtml(io::IO, α::List, tmpls=PersistentHashMap{Symbol,Any}();
@@ -174,8 +194,8 @@ function tohtml(io::IO, α::List, tmpls=PersistentHashMap{Symbol,Any}();
                 modules=[])
     println(io, "<!DOCTYPE html>")
     state = RemarkState(makeenv(tmpls, modules), file)
-    ashiccup, _ = acc2(tohiccup, α, state)
-    show_html(io, flattentree(ashiccup))
+    dom, _ = acc2(domify, α, state)
+    show_html(io, flattentree(dom))
 end
 
 function tohtml(io::IO, f::AbstractString,
