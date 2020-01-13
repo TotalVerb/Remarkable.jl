@@ -19,7 +19,7 @@ else
         list(d.name, attributes, undomified...)
     end
 end
-rendermd(x) = undomify(mdconvert(Markdown.parse(x)))
+rendermd(x) = undomify.(mdconvert(Markdown.parse(x)))
 
 let state = nothing
     global function setstate!(st)

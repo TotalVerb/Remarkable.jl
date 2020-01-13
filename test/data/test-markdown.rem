@@ -1,1 +1,1 @@
-(remark (include-markdown "test.md"))
+(remarks (include-markdown "test.md"))

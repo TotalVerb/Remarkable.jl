@@ -12,7 +12,7 @@ end
 (html ([lang "en"])
   (head (title "Hello World!"))
   (body (p "This is my first Remark page")))
-""" == lispify((
+""" == SExpression((
         :html, ((:lang, "en"),),
         (:head, (:title, "Hello World!")),
         (:body, (:p, "This is my first Remark page"))))
@@ -129,7 +129,7 @@ end
 
 @test Remarkable.Remark.tohtml("data/test-markdown.rem") == """
 <!DOCTYPE html>
-<div><h1>Some Markdown</h1><p><strong>Test</strong>.</p></div>"""
+<h1>Some Markdown</h1><p><strong>Test</strong>.</p>"""
 
 @testset "Each" begin
 @test rem("""
@@ -150,7 +150,7 @@ end
 @testset "Markdown Render" begin
 @test Remarkable.Remark.tohtml("data/markdown-render.rem") == """
 <!DOCTYPE html>
-<div><p>my <a href="http://example.com">link to</a></p></div>"""
+<p>my <a href="http://example.com">link to</a></p>"""
 end
 
 @testset "Object Include" begin
