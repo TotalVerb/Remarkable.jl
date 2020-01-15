@@ -20,7 +20,7 @@ jobs:
       script: julia --project=docs -e '
           using Pkg;
           Pkg.add(PackageSpec(url="https://github.com/TotalVerb/SchemeSyntax.jl"));
-          Pkg.develop("SchemeSyntax");
+          Pkg.develop(PackageSpec(uuid="ae6fee66-c21b-11e9-21f5-f142c7f3686e"));
           Pkg.develop(PackageSpec(path=pwd()));
           Pkg.instantiate();
           include("docs/make.jl");'
