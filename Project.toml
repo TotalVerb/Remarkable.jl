@@ -26,15 +26,13 @@ Distances = "0.10"
 Documenter = "0.27"
 EnglishText = "0.6"
 FunctionalCollections = "0.5"
-SExpressions = "1.0.1"
+SExpressions = "1.1"
 SchemeSyntax = "0.1"
 TimeZones = "1"
 julia = "1.11"
 
-# Temporary source overrides until SExpressions 1.0.1 and SchemeSyntax 0.1.1 are
-# registered. Remove before the next General registry release.
+# Temporary source override until SchemeSyntax 0.1.1 is registered.
 [sources]
-SExpressions = {url = "https://github.com/TotalVerb/SExpressions.jl", rev = "master"}
 SchemeSyntax = {url = "https://github.com/TotalVerb/SchemeSyntax.jl", rev = "devin/julia-1.12-update"}
 
 [extras]
