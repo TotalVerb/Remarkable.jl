@@ -1,2 +1,9 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Remarkable = "a0f30bde-93b9-5201-afbb-ce3170fb063e"
+SExpressions = "eaa8e424-c5f6-11e8-1b3d-d576ba0eee97"
+SchemeSyntax = "ae6fee66-c21b-11e9-21f5-f142c7f3686e"
+
+[sources]
+SExpressions = {rev = "master", url = "https://github.com/TotalVerb/SExpressions.jl"}
+SchemeSyntax = {rev = "devin/julia-1.12-update", url = "https://github.com/TotalVerb/SchemeSyntax.jl"}
