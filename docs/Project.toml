@@ -1,2 +1,6 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+SchemeSyntax = "ae6fee66-c21b-11e9-21f5-f142c7f3686e"
+
+[sources]
+SchemeSyntax = {rev = "devin/julia-1.12-update", url = "https://github.com/TotalVerb/SchemeSyntax.jl"}

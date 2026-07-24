@@ -1,6 +1,6 @@
 # Remarkable
 
-[![Build Status](https://travis-ci.org/TotalVerb/Remarkable.jl.svg?branch=master)](https://travis-ci.org/TotalVerb/Remarkable.jl)
+[![Build Status](https://github.com/TotalVerb/Remarkable.jl/actions/workflows/CI.yml/badge.svg?branch=master)](https://github.com/TotalVerb/Remarkable.jl/actions/workflows/CI.yml)
 
 [![Coverage Status](https://coveralls.io/repos/TotalVerb/Remarkable.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/TotalVerb/Remarkable.jl?branch=master)
 
